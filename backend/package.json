@@ -1,0 +1,19 @@
+{
+  "name": "@llm-chat/backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "check": "node --check src/server.js && node --check src/db.js && node --check src/auth.js && node --check src/ai.js"
+  },
+  "dependencies": {
+    "@ai-sdk/openai-compatible": "^1.0.18",
+    "ai": "^5.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}
