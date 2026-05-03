@@ -1,6 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { LogOut, MessageSquareText, Send, Sparkles, UserRound } from "lucide-react";
+import {
+  LogOut,
+  MessageSquareText,
+  Send,
+  Sparkles,
+  UserRound,
+} from "lucide-react";
 import "./styles.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
@@ -8,7 +14,7 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 function authHeaders(token) {
   return {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`
+    Authorization: `Bearer ${token}`,
   };
 }
 
@@ -44,7 +50,7 @@ function AuthView({ onAuthenticated }) {
       const data = await request(`/auth/${mode}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password }),
       });
 
       onAuthenticated(data);
@@ -68,19 +74,36 @@ function AuthView({ onAuthenticated }) {
           </div>
         </div>
 
-        <div className="mode-switch" role="tablist" aria-label="Authentication mode">
-          <button className={mode === "login" ? "active" : ""} onClick={() => setMode("login")} type="button">
+        <div
+          className="mode-switch"
+          role="tablist"
+          aria-label="Authentication mode"
+        >
+          <button
+            className={mode === "login" ? "active" : ""}
+            onClick={() => setMode("login")}
+            type="button"
+          >
             Login
           </button>
-          <button className={mode === "register" ? "active" : ""} onClick={() => setMode("register")} type="button">
-            Register
+          <button
+            className={mode === "register" ? "active" : ""}
+            onClick={() => setMode("register")}
+            type="button"
+          >
+            Registering
           </button>
         </div>
 
         <form onSubmit={submit} className="auth-form">
           <label>
             Username
-            <input value={username} onChange={(event) => setUsername(event.target.value)} minLength={3} required />
+            <input
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              minLength={3}
+              required
+            />
           </label>
 
           <label>
@@ -98,7 +121,11 @@ function AuthView({ onAuthenticated }) {
 
           <button className="primary-button" disabled={loading} type="submit">
             <UserRound size={18} aria-hidden="true" />
-            {loading ? "Working..." : mode === "login" ? "Login" : "Create account"}
+            {loading
+              ? "Working..."
+              : mode === "login"
+                ? "Login"
+                : "Create account"}
           </button>
         </form>
       </section>
@@ -110,7 +137,9 @@ function ChatMessage({ message }) {
   const isUser = message.role === "user";
 
   return (
-    <article className={`message ${isUser ? "user-message" : "assistant-message"}`}>
+    <article
+      className={`message ${isUser ? "user-message" : "assistant-message"}`}
+    >
       <div className="message-meta">{isUser ? "You" : "Assistant"}</div>
       <p>{message.content}</p>
     </article>
@@ -124,11 +153,14 @@ function ChatView({ session, onLogout }) {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
 
-  const initials = useMemo(() => session.user.username.slice(0, 2).toUpperCase(), [session.user.username]);
+  const initials = useMemo(
+    () => session.user.username.slice(0, 2).toUpperCase(),
+    [session.user.username],
+  );
 
   useEffect(() => {
     request("/messages", {
-      headers: authHeaders(session.token)
+      headers: authHeaders(session.token),
     })
       .then((data) => setMessages(data.messages))
       .catch((err) => setError(err.message));
@@ -156,10 +188,13 @@ function ChatView({ session, onLogout }) {
       const data = await request("/chat", {
         method: "POST",
         headers: authHeaders(session.token),
-        body: JSON.stringify({ message: content })
+        body: JSON.stringify({ message: content }),
       });
 
-      setMessages((current) => [...current, { role: "assistant", content: data.reply }]);
+      setMessages((current) => [
+        ...current,
+        { role: "assistant", content: data.reply },
+      ]);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -171,7 +206,7 @@ function ChatView({ session, onLogout }) {
     try {
       await request("/auth/logout", {
         method: "POST",
-        headers: authHeaders(session.token)
+        headers: authHeaders(session.token),
       });
     } finally {
       onLogout();
@@ -220,7 +255,9 @@ function ChatView({ session, onLogout }) {
               <p>Ask the assistant something to begin.</p>
             </div>
           ) : (
-            messages.map((message, index) => <ChatMessage key={`${message.role}-${index}`} message={message} />)
+            messages.map((message, index) => (
+              <ChatMessage key={`${message.role}-${index}`} message={message} />
+            ))
           )}
 
           {loading ? (
@@ -248,7 +285,12 @@ function ChatView({ session, onLogout }) {
             placeholder="Type a message"
             rows={2}
           />
-          <button className="send-button" disabled={loading || draft.trim().length === 0} aria-label="Send" type="submit">
+          <button
+            className="send-button"
+            disabled={loading || draft.trim().length === 0}
+            aria-label="Send"
+            type="submit"
+          >
             <Send size={20} aria-hidden="true" />
           </button>
         </form>
